@@ -326,20 +326,20 @@
     </div>
   </div>
 
-  <!-- Content -->
-  <div class="page-body">
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        {% for category, message in messages %}
-          <div class="alert alert-{{ category }}">
-            <span>{{ message }}</span>
-            <button onclick="this.parentElement.remove()">✕</button>
-          </div>
-        {% endfor %}
-      {% endif %}
-    {% endwith %}
-    {% block content %}{% endblock %}
-  </div>
+    <!-- Content -->
+    <div class="page-body">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+              <span>{{ message }}</span>
+              <button onclick="this.parentElement.remove()">✕</button>
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+    </div>
 </div>
 
 <!-- Глобальный модальный диалог подтверждения удаления -->
