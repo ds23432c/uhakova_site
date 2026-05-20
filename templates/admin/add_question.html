@@ -1,0 +1,91 @@
+<!--
+=======================================================
+ФАЙЛ: templates/admin/add_question.html
+ЗАМЕНИТЬ: senior_edu/templates/admin/add_question.html (НОВЫЙ ФАЙЛ)
+=======================================================
+-->
+{% extends 'admin/base_admin.html' %}
+{% block title %}Добавить вопрос{% endblock %}
+{% block page_title %}<i class="fas fa-plus-circle"></i> Добавить вопрос{% endblock %}
+{% block content %}
+<div style="max-width:800px">
+  <div class="card">
+    <div class="card-title"><i class="fas fa-question-circle"></i> Новый вопрос для теста</div>
+    <form method="POST">
+      <div class="form-group">
+        <label>Урок <span class="required">*</span></label>
+        <select name="lesson_id" class="form-control" required>
+          <option value="">— Выберите урок —</option>
+          {% for lesson in lessons %}
+          <option value="{{ lesson.id }}">{{ lesson.module.order_num }}.{{ lesson.order_num }} {{ lesson.title }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Текст вопроса <span class="required">*</span></label>
+        <textarea name="question_text" class="form-control" rows="3"
+                  placeholder="Например: Что такое браузер?" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Варианты ответов <span class="required">*</span> — нажмите на правильный</label>
+        <div class="hint" style="margin-bottom:12px">Нажмите на нужный вариант чтобы отметить его как правильный ответ</div>
+        <div class="option-cards">
+          <div class="option-card selected" onclick="selectOption(this,'a')">
+            <label>
+              <input type="radio" name="correct_answer" value="a" checked>
+              <div class="option-letter">А</div>
+              <input type="text" name="option_a" class="form-control" placeholder="Вариант А" required
+                     style="border:none;padding:4px 0;font-size:0.95em" onclick="event.stopPropagation()">
+            </label>
+          </div>
+          <div class="option-card" onclick="selectOption(this,'b')">
+            <label>
+              <input type="radio" name="correct_answer" value="b">
+              <div class="option-letter">Б</div>
+              <input type="text" name="option_b" class="form-control" placeholder="Вариант Б" required
+                     style="border:none;padding:4px 0;font-size:0.95em" onclick="event.stopPropagation()">
+            </label>
+          </div>
+          <div class="option-card" onclick="selectOption(this,'c')">
+            <label>
+              <input type="radio" name="correct_answer" value="c">
+              <div class="option-letter">В</div>
+              <input type="text" name="option_c" class="form-control" placeholder="Вариант В (необязательно)"
+                     style="border:none;padding:4px 0;font-size:0.95em" onclick="event.stopPropagation()">
+            </label>
+          </div>
+          <div class="option-card" onclick="selectOption(this,'d')">
+            <label>
+              <input type="radio" name="correct_answer" value="d">
+              <div class="option-letter">Г</div>
+              <input type="text" name="option_d" class="form-control" placeholder="Вариант Г (необязательно)"
+                     style="border:none;padding:4px 0;font-size:0.95em" onclick="event.stopPropagation()">
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Объяснение правильного ответа (необязательно)</label>
+        <textarea name="explanation" class="form-control" rows="2"
+                  placeholder="Объясните почему именно этот ответ правильный..."></textarea>
+        <div class="hint">Показывается ученику после ответа на вопрос</div>
+      </div>
+
+      <div style="display:flex;gap:12px;margin-top:20px">
+        <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-save"></i> Сохранить вопрос</button>
+        <a href="{{ url_for('admin.questions') }}" class="btn btn-outline btn-lg">Отмена</a>
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+function selectOption(card, value) {
+  document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+  card.querySelector('input[type="radio"]').checked = true;
+}
+</script>
+{% endblock %}

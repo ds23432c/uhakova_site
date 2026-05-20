@@ -1,0 +1,39 @@
+<!--
+=======================================================
+ФАЙЛ: templates/admin/edit_module.html
+НОВЫЙ ФАЙЛ: senior_edu/templates/admin/edit_module.html
+=======================================================
+-->
+{% extends 'admin/base_admin.html' %}
+{% block title %}Редактировать модуль{% endblock %}
+{% block page_title %}<i class="fas fa-edit"></i> Редактировать модуль{% endblock %}
+{% block content %}
+<div style="max-width:600px">
+  <div class="card">
+    <form method="POST">
+      <div class="form-group">
+        <label>Название <span class="required">*</span></label>
+        <input type="text" name="title" class="form-control" value="{{ module.title }}" required>
+      </div>
+      <div class="form-group">
+        <label>Описание</label>
+        <textarea name="description" class="form-control" rows="3">{{ module.description or '' }}</textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Иконка (эмодзи)</label>
+          <input type="text" name="icon" class="form-control" value="{{ module.icon }}">
+        </div>
+        <div class="form-group">
+          <label>Порядковый номер</label>
+          <input type="number" name="order_num" class="form-control" value="{{ module.order_num }}" min="1">
+        </div>
+      </div>
+      <div style="display:flex;gap:12px">
+        <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-save"></i> Сохранить</button>
+        <a href="{{ url_for('admin.modules') }}" class="btn btn-outline btn-lg">Отмена</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

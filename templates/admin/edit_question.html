@@ -1,0 +1,63 @@
+<!--
+=======================================================
+ФАЙЛ: templates/admin/edit_question.html
+ЗАМЕНИТЬ: senior_edu/templates/admin/edit_question.html (НОВЫЙ ФАЙЛ)
+=======================================================
+-->
+{% extends 'admin/base_admin.html' %}
+{% block title %}Редактировать вопрос{% endblock %}
+{% block page_title %}<i class="fas fa-edit"></i> Редактировать вопрос{% endblock %}
+{% block content %}
+<div style="max-width:800px">
+  <div class="card">
+    <form method="POST">
+      <div class="form-group">
+        <label>Урок</label>
+        <select name="lesson_id" class="form-control">
+          {% for lesson in lessons %}
+          <option value="{{ lesson.id }}" {% if lesson.id == q.lesson_id %}selected{% endif %}>
+            {{ lesson.module.order_num }}.{{ lesson.order_num }} {{ lesson.title }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Текст вопроса <span class="required">*</span></label>
+        <textarea name="question_text" class="form-control" rows="3" required>{{ q.question_text }}</textarea>
+      </div>
+      <div class="form-group">
+        <label>Варианты ответов — нажмите на правильный</label>
+        <div class="option-cards">
+          {% for letter, label, value in [('a','А',q.option_a),('b','Б',q.option_b),('c','В',q.option_c),('d','Г',q.option_d)] %}
+          <div class="option-card {% if q.correct_answer == letter %}selected{% endif %}"
+               onclick="selectOption(this,'{{ letter }}')">
+            <label>
+              <input type="radio" name="correct_answer" value="{{ letter }}" {% if q.correct_answer == letter %}checked{% endif %}>
+              <div class="option-letter">{{ label }}</div>
+              <input type="text" name="option_{{ letter }}" class="form-control" value="{{ value or '' }}"
+                     placeholder="Вариант {{ label }}" style="border:none;padding:4px 0;font-size:0.95em"
+                     onclick="event.stopPropagation()">
+            </label>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Объяснение</label>
+        <textarea name="explanation" class="form-control" rows="2">{{ q.explanation or '' }}</textarea>
+      </div>
+      <div style="display:flex;gap:12px;margin-top:20px">
+        <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-save"></i> Сохранить</button>
+        <a href="{{ url_for('admin.questions') }}" class="btn btn-outline btn-lg">Отмена</a>
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+function selectOption(card, value) {
+  document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+  card.querySelector('input[type="radio"]').checked = true;
+}
+</script>
+{% endblock %}

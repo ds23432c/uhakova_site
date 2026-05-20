@@ -1,0 +1,90 @@
+<!--
+=======================================================
+ФАЙЛ: templates/admin/view_user.html
+ЗАМЕНИТЬ: senior_edu/templates/admin/view_user.html (НОВЫЙ ФАЙЛ)
+=======================================================
+-->
+{% extends 'admin/base_admin.html' %}
+{% block title %}Профиль пользователя{% endblock %}
+{% block page_title %}<i class="fas fa-user"></i> {{ user.name }}{% endblock %}
+{% block content %}
+<div style="display:grid;grid-template-columns:1fr 2fr;gap:20px">
+  <!-- Профиль -->
+  <div>
+    <div class="card" style="text-align:center;margin-bottom:16px">
+      <img src="{{ url_for('static', filename='uploads/' + user.avatar) }}"
+           onerror="this.onerror=null;this.src='/static/img/default.png'"
+           style="width:80px;height:80px;border-radius:50%;object-fit:cover;margin:0 auto 12px">
+      <h3>{{ user.name }}</h3>
+      <p style="color:var(--text-muted);font-size:0.9em">{{ user.email }}</p>
+      <div style="margin:12px 0">
+        {% if user.is_active_user %}
+        <span class="badge badge-success">✅ Активен</span>
+        {% else %}
+        <span class="badge badge-danger">🚫 Заблокирован</span>
+        {% endif %}
+      </div>
+      <div style="font-size:0.85em;color:var(--text-muted)">
+        {% if user.city %}<p>📍 {{ user.city }}</p>{% endif %}
+        {% if user.age %}<p>🎂 {{ user.age }} лет</p>{% endif %}
+        <p>📅 Зарегистрирован {{ user.created_at.strftime('%d.%m.%Y') if user.created_at else '—' }}</p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-title"><i class="fas fa-chart-bar"></i> Прогресс</div>
+      <p>Пройдено уроков: <strong>{{ completed }}</strong></p>
+    </div>
+
+    <!-- Действия -->
+    <div class="card">
+      <div class="card-title"><i class="fas fa-cog"></i> Действия</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <form action="{{ url_for('admin.toggle_user', user_id=user.id) }}" method="POST">
+          <button type="submit" class="btn btn-sm {% if user.is_active_user %}btn-warning{% else %}btn-success{% endif %}" style="width:100%">
+            {% if user.is_active_user %}🚫 Заблокировать{% else %}✅ Активировать{% endif %}
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Сброс пароля -->
+    <div class="card" style="margin-top:16px">
+      <div class="card-title"><i class="fas fa-key"></i> Сброс пароля</div>
+      <form action="{{ url_for('admin.reset_password', user_id=user.id) }}" method="POST">
+        <div class="form-group">
+          <input type="password" name="new_password" class="form-control" placeholder="Новый пароль (мин. 6 символов)" required minlength="6">
+        </div>
+        <button type="submit" class="btn btn-danger btn-sm" style="width:100%">
+          <i class="fas fa-key"></i> Изменить пароль
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Тесты -->
+  <div class="card">
+    <div class="card-title"><i class="fas fa-chart-line"></i> История тестов</div>
+    {% if tests %}
+    <table class="admin-table">
+      <thead><tr><th>Урок</th><th>Результат</th><th>Статус</th><th>Дата</th></tr></thead>
+      <tbody>
+        {% for t in tests %}
+        <tr>
+          <td>{{ t.lesson.title }}</td>
+          <td>{{ t.score }}/{{ t.total }}</td>
+          <td>{% if t.passed %}<span class="badge badge-success">✅ Сдан</span>{% else %}<span class="badge badge-danger">❌ Не сдан</span>{% endif %}</td>
+          <td>{{ t.taken_at.strftime('%d.%m.%Y') }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p style="color:var(--text-muted);text-align:center;padding:20px">Тестов пока нет</p>
+    {% endif %}
+    <div style="margin-top:16px">
+      <a href="{{ url_for('admin.users') }}" class="btn btn-outline">← Все пользователи</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

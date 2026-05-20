@@ -1,0 +1,42 @@
+<!--
+=======================================================
+ФАЙЛ: templates/admin/modules.html
+НОВЫЙ ФАЙЛ: senior_edu/templates/admin/modules.html
+=======================================================
+-->
+{% extends 'admin/base_admin.html' %}
+{% block title %}Модули{% endblock %}
+{% block page_title %}<i class="fas fa-layer-group"></i> Модули{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1><i class="fas fa-layer-group"></i> Модули ({{ modules|length }})</h1>
+  <a href="{{ url_for('admin.add_module') }}" class="btn btn-primary">
+    <i class="fas fa-plus"></i> Добавить модуль
+  </a>
+</div>
+<div class="card">
+  <table class="admin-table">
+    <thead><tr><th>№</th><th>Иконка</th><th>Название</th><th>Описание</th><th>Уроков</th><th>Действия</th></tr></thead>
+    <tbody>
+      {% for m in modules %}
+      <tr>
+        <td>{{ m.order_num }}</td>
+        <td style="font-size:1.5em">{{ m.icon }}</td>
+        <td><strong>{{ m.title }}</strong></td>
+        <td style="color:var(--text-muted);font-size:0.9em">{{ m.description[:60] if m.description else '—' }}...</td>
+        <td><span class="badge badge-primary">{{ m.lessons|length }}</span></td>
+        <td>
+          <div class="actions">
+            <a href="{{ url_for('admin.edit_module', module_id=m.id) }}" class="btn btn-primary btn-sm">
+              <i class="fas fa-edit"></i> Изменить
+            </a>
+            <button onclick="confirmDelete({{ url_for('admin.delete_module', module_id=m.id) | tojson }}, {{ ('Удалить модуль «' ~ m.title ~ '»? Убедитесь что в нём нет уроков.') | tojson }})"
+              class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

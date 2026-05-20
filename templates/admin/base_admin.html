@@ -1,18 +1,421 @@
-{% extends 'base.html' %}
-{% block title %}Админ-панель{% endblock %}
-{% block content %}
-<div class="admin-page">
-  <div class="admin-sidebar">
-    <h3>⚙️ Управление</h3>
-    <a href="{{ url_for('admin.dashboard') }}" class="{% if request.endpoint == 'admin.dashboard' %}active{% endif %}"><i class="fas fa-tachometer-alt"></i> Дашборд</a>
-    <a href="{{ url_for('admin.users') }}" class="{% if request.endpoint == 'admin.users' %}active{% endif %}"><i class="fas fa-users"></i> Пользователи</a>
-    <a href="{{ url_for('admin.lessons') }}" class="{% if request.endpoint == 'admin.lessons' %}active{% endif %}"><i class="fas fa-book"></i> Уроки</a>
-    <a href="{{ url_for('admin.blog') }}" class="{% if request.endpoint == 'admin.blog' %}active{% endif %}"><i class="fas fa-newspaper"></i> Блог</a>
-    <a href="{{ url_for('admin.feedback') }}" class="{% if request.endpoint == 'admin.feedback' %}active{% endif %}"><i class="fas fa-envelope"></i> Обратная связь</a>
-    <a href="{{ url_for('admin.send_email') }}" class="{% if request.endpoint == 'admin.send_email' %}active{% endif %}"><i class="fas fa-paper-plane"></i> Рассылка</a>
+<!--
+=======================================================
+ФАЙЛ: templates/admin/base_admin.html
+ЗАМЕНИТЬ: senior_edu/templates/admin/base_admin.html
+=======================================================
+-->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Админ-панель{% endblock %} — УчимсяВместе</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- TinyMCE — визуальный редактор текста (как Word) -->
+  <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+  <style>
+    /* ── Переменные ──────────────────────────── */
+    :root {
+      --primary: #2c5f8a;
+      --primary-light: #3a7abd;
+      --primary-dark: #1e4268;
+      --success: #27ae60;
+      --danger: #e74c3c;
+      --warning: #f39c12;
+      --bg: #f0f4f8;
+      --card: #ffffff;
+      --border: #dee2e6;
+      --text: #2d3436;
+      --text-muted: #6c757d;
+      --sidebar-w: 260px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Roboto', sans-serif; font-size: 15px; background: var(--bg); color: var(--text); }
+
+    /* ── Sidebar ─────────────────────────────── */
+    .sidebar {
+      position: fixed; left: 0; top: 0; bottom: 0;
+      width: var(--sidebar-w); background: var(--primary-dark);
+      overflow-y: auto; z-index: 100;
+    }
+    .sidebar-logo {
+      padding: 20px; font-size: 1.2em; font-weight: 700;
+      color: white; border-bottom: 1px solid rgba(255,255,255,0.1);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .sidebar-section { padding: 12px 16px 4px; font-size: 0.75em; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px; }
+    .sidebar a {
+      display: flex; align-items: center; gap: 12px;
+      padding: 11px 20px; color: rgba(255,255,255,0.75);
+      text-decoration: none; transition: all 0.2s; font-size: 0.95em;
+    }
+    .sidebar a:hover, .sidebar a.active {
+      background: rgba(255,255,255,0.1); color: white;
+      border-right: 3px solid white;
+    }
+    .sidebar a i { width: 18px; text-align: center; }
+    .sidebar-badge {
+      margin-left: auto; background: var(--danger);
+      color: white; border-radius: 10px;
+      padding: 1px 7px; font-size: 0.75em;
+    }
+
+    /* ── Main ────────────────────────────────── */
+    .main-wrap { margin-left: var(--sidebar-w); min-height: 100vh; }
+    .topbar {
+      background: var(--card); border-bottom: 1px solid var(--border);
+      padding: 0 28px; height: 60px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 50;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    .topbar-title { font-size: 1.1em; font-weight: 600; color: var(--text); }
+    .topbar-right { display: flex; align-items: center; gap: 16px; }
+    .topbar-user { display: flex; align-items: center; gap: 8px; font-size: 0.9em; }
+    .topbar-user img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
+    .btn-exit {
+      padding: 7px 14px; background: none; border: 1px solid var(--border);
+      border-radius: 8px; cursor: pointer; color: var(--text-muted);
+      text-decoration: none; font-size: 0.85em; display: flex; align-items: center; gap: 6px;
+    }
+    .btn-exit:hover { background: #fee; color: var(--danger); border-color: var(--danger); }
+
+    .page-body { padding: 28px; }
+
+    /* ── Cards ───────────────────────────────── */
+    .card {
+      background: var(--card); border-radius: 12px;
+      border: 1px solid var(--border); padding: 24px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+    }
+    .card-title {
+      font-size: 1.05em; font-weight: 600; margin-bottom: 18px;
+      display: flex; align-items: center; gap: 8px; color: var(--text);
+    }
+    .card-title i { color: var(--primary); }
+
+    /* ── Stat cards ──────────────────────────── */
+    .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-bottom: 24px; }
+    .stat-card {
+      background: var(--card); border-radius: 12px; padding: 20px 24px;
+      border: 1px solid var(--border); box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+      display: flex; align-items: center; gap: 16px;
+    }
+    .stat-icon {
+      width: 52px; height: 52px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4em; flex-shrink: 0;
+    }
+    .stat-icon.blue { background: #e3f0fb; color: var(--primary); }
+    .stat-icon.green { background: #e8f8ef; color: var(--success); }
+    .stat-icon.orange { background: #fff3e0; color: var(--warning); }
+    .stat-icon.red { background: #fdecea; color: var(--danger); }
+    .stat-num { font-size: 1.8em; font-weight: 700; line-height: 1; }
+    .stat-label { font-size: 0.85em; color: var(--text-muted); margin-top: 3px; }
+
+    /* ── Alerts ──────────────────────────────── */
+    .alert {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 18px; border-radius: 8px; margin-bottom: 16px; font-weight: 500;
+    }
+    .alert-success { background: #d4edda; color: #155724; border-left: 4px solid var(--success); }
+    .alert-danger  { background: #f8d7da; color: #721c24; border-left: 4px solid var(--danger); }
+    .alert-warning { background: #fff3cd; color: #856404; border-left: 4px solid var(--warning); }
+    .alert-info    { background: #d1ecf1; color: #0c5460; border-left: 4px solid #17a2b8; }
+    .alert button  { background: none; border: none; cursor: pointer; font-size: 1.1em; }
+
+    /* ── Buttons ─────────────────────────────── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 10px 20px; border-radius: 8px; font-size: 0.95em;
+      font-weight: 500; cursor: pointer; border: none;
+      text-decoration: none; transition: all 0.2s;
+    }
+    .btn:hover { opacity: 0.88; transform: translateY(-1px); text-decoration: none; }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-success { background: var(--success); color: white; }
+    .btn-danger  { background: var(--danger); color: white; }
+    .btn-warning { background: var(--warning); color: white; }
+    .btn-outline { background: white; color: var(--primary); border: 1px solid var(--primary); }
+    .btn-sm { padding: 6px 12px; font-size: 0.85em; }
+    .btn-lg { padding: 13px 28px; font-size: 1.05em; }
+
+    /* ── Forms ───────────────────────────────── */
+    .form-group { margin-bottom: 20px; }
+    .form-group label {
+      display: block; margin-bottom: 6px;
+      font-weight: 600; font-size: 0.95em;
+    }
+    .form-group .hint { font-size: 0.82em; color: var(--text-muted); margin-top: 4px; }
+    .form-control {
+      width: 100%; padding: 10px 14px;
+      border: 1.5px solid var(--border); border-radius: 8px;
+      font-size: 0.95em; background: white; color: var(--text);
+      transition: border-color 0.2s;
+    }
+    .form-control:focus { outline: none; border-color: var(--primary); }
+    select.form-control { cursor: pointer; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+    .required { color: var(--danger); }
+
+    /* ── Tables ──────────────────────────────── */
+    .table-wrap { overflow-x: auto; }
+    table.admin-table { width: 100%; border-collapse: collapse; font-size: 0.92em; }
+    .admin-table th {
+      background: #f8fafc; padding: 11px 14px; text-align: left;
+      font-weight: 600; border-bottom: 2px solid var(--border);
+      color: var(--text-muted); font-size: 0.85em; text-transform: uppercase;
+    }
+    .admin-table td { padding: 11px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    .admin-table tr:hover td { background: #f8fafc; }
+    .admin-table tr:last-child td { border-bottom: none; }
+
+    /* ── Badges ──────────────────────────────── */
+    .badge {
+      display: inline-block; padding: 3px 10px; border-radius: 20px;
+      font-size: 0.78em; font-weight: 600;
+    }
+    .badge-success { background: #d4edda; color: #155724; }
+    .badge-danger  { background: #f8d7da; color: #721c24; }
+    .badge-warning { background: #fff3cd; color: #856404; }
+    .badge-info    { background: #d1ecf1; color: #0c5460; }
+    .badge-primary { background: #e3f0fb; color: var(--primary); }
+
+    /* ── Modal ───────────────────────────────── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.5); z-index: 999;
+      align-items: center; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: white; border-radius: 12px; padding: 28px;
+      max-width: 440px; width: 90%;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    }
+    .modal-box h3 { margin-bottom: 10px; }
+    .modal-box p { color: var(--text-muted); margin-bottom: 20px; }
+    .modal-btns { display: flex; gap: 10px; justify-content: flex-end; }
+
+    /* ── Page header ─────────────────────────── */
+    .page-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .page-header h1 { font-size: 1.4em; display: flex; align-items: center; gap: 10px; }
+    .page-header h1 i { color: var(--primary); }
+
+    /* ── Search bar ──────────────────────────── */
+    .search-bar {
+      display: flex; gap: 10px; margin-bottom: 18px;
+    }
+    .search-bar input { flex: 1; }
+    .search-bar button { flex-shrink: 0; }
+
+    /* ── Upload preview ──────────────────────── */
+    .upload-area {
+      border: 2px dashed var(--border); border-radius: 8px;
+      padding: 20px; text-align: center; cursor: pointer;
+      transition: border-color 0.2s; color: var(--text-muted);
+    }
+    .upload-area:hover { border-color: var(--primary); }
+    .upload-area img { max-height: 120px; margin-top: 10px; border-radius: 6px; }
+
+    /* ── Actions row ─────────────────────────── */
+    .actions { display: flex; gap: 6px; }
+
+    /* ── Option cards (для выбора правильного ответа) ── */
+    .option-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .option-card {
+      border: 2px solid var(--border); border-radius: 8px; padding: 12px;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .option-card input[type="radio"] { display: none; }
+    .option-card.selected { border-color: var(--success); background: #f0fff4; }
+    .option-card label { cursor: pointer; display: flex; align-items: center; gap: 8px; }
+    .option-letter {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--border); display: flex; align-items: center;
+      justify-content: center; font-weight: 700; font-size: 0.85em; flex-shrink: 0;
+    }
+    .option-card.selected .option-letter { background: var(--success); color: white; }
+
+    /* ── Responsive ──────────────────────────── */
+    @media (max-width: 900px) {
+      .sidebar { transform: translateX(-100%); transition: transform 0.3s; }
+      .sidebar.open { transform: translateX(0); }
+      .main-wrap { margin-left: 0; }
+      .stats-row { grid-template-columns: 1fr 1fr; }
+      .form-row, .form-row-3 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <i class="fas fa-graduation-cap"></i>
+    <span>Админ-панель</span>
   </div>
-  <div class="admin-content">
-    {% block admin_content %}{% endblock %}
+
+  <div class="sidebar-section">Главная</div>
+  <a href="{{ url_for('admin.dashboard') }}" class="{% if request.endpoint == 'admin.dashboard' %}active{% endif %}">
+    <i class="fas fa-tachometer-alt"></i> Дашборд
+  </a>
+
+  <div class="sidebar-section">Контент</div>
+  <a href="{{ url_for('admin.modules') }}" class="{% if 'module' in request.endpoint %}active{% endif %}">
+    <i class="fas fa-layer-group"></i> Модули
+  </a>
+  <a href="{{ url_for('admin.lessons') }}" class="{% if 'lesson' in request.endpoint %}active{% endif %}">
+    <i class="fas fa-book-open"></i> Уроки
+  </a>
+  <a href="{{ url_for('admin.questions') }}" class="{% if 'question' in request.endpoint %}active{% endif %}">
+    <i class="fas fa-question-circle"></i> Тесты и вопросы
+  </a>
+  <a href="{{ url_for('admin.blog') }}" class="{% if 'post' in request.endpoint or request.endpoint == 'admin.blog' %}active{% endif %}">
+    <i class="fas fa-newspaper"></i> Блог и новости
+  </a>
+
+  <div class="sidebar-section">Пользователи</div>
+  <a href="{{ url_for('admin.users') }}" class="{% if 'user' in request.endpoint %}active{% endif %}">
+    <i class="fas fa-users"></i> Пользователи
+  </a>
+  <a href="{{ url_for('admin.feedback') }}" class="{% if 'feedback' in request.endpoint %}active{% endif %}">
+    <i class="fas fa-envelope"></i> Обратная связь
+    {% set unread_fb = namespace(c=0) %}
+    {# подсчёт непрочитанных #}
+  </a>
+  <a href="{{ url_for('admin.send_email') }}" class="{% if request.endpoint == 'admin.send_email' %}active{% endif %}">
+    <i class="fas fa-paper-plane"></i> Email рассылка
+  </a>
+
+  <div class="sidebar-section">Система</div>
+  <a href="{{ url_for('main.index') }}" target="_blank">
+    <i class="fas fa-external-link-alt"></i> Открыть сайт
+  </a>
+  <a href="{{ url_for('auth.logout') }}">
+    <i class="fas fa-sign-out-alt"></i> Выйти
+  </a>
+</aside>
+
+<!-- MAIN -->
+<div class="main-wrap">
+  <!-- Topbar -->
+  <div class="topbar">
+    <div style="display:flex;align-items:center;gap:12px">
+      <button onclick="document.getElementById('sidebar').classList.toggle('open')"
+              style="display:none;background:none;border:none;font-size:1.3em;cursor:pointer" id="menuBtn">
+        <i class="fas fa-bars"></i>
+      </button>
+      <span class="topbar-title">{% block page_title %}Панель управления{% endblock %}</span>
+    </div>
+    <div class="topbar-right">
+      <div class="topbar-user">
+        <img src="{{ url_for('static', filename='uploads/' + current_user.avatar) }}"
+             onerror="this.onerror=null;this.src='/static/img/default.png'">
+        <span>{{ current_user.name }}</span>
+      </div>
+      <a href="{{ url_for('auth.logout') }}" class="btn-exit">
+        <i class="fas fa-sign-out-alt"></i> Выйти
+      </a>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="page-body">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">
+            <span>{{ message }}</span>
+            <button onclick="this.parentElement.remove()">✕</button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
   </div>
 </div>
-{% endblock %}
+
+<!-- Глобальный модальный диалог подтверждения удаления -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal-box">
+    <h3>🗑️ Подтвердите удаление</h3>
+    <p id="deleteModalText">Вы уверены? Это действие нельзя отменить.</p>
+    <div class="modal-btns">
+      <button class="btn btn-outline" onclick="closeDeleteModal()">Отмена</button>
+      <form id="deleteModalForm" method="POST" style="display:inline">
+        <button type="submit" class="btn btn-danger">Удалить</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+// Инициализация TinyMCE (визуальный редактор как Word)
+tinymce.init({
+  selector: 'textarea.tinymce',
+  language: 'ru',
+  height: 400,
+  menubar: false,
+  plugins: ['lists', 'link', 'image', 'table', 'code', 'help', 'wordcount'],
+  toolbar: 'undo redo | formatselect | bold italic underline | ' +
+           'alignleft aligncenter alignright | bullist numlist | ' +
+           'link image | table | removeformat | help',
+  content_style: 'body { font-family: Roboto, Arial; font-size: 16px; line-height: 1.7; }',
+  branding: false,
+  promotion: false
+});
+
+// Модальное окно подтверждения удаления
+function confirmDelete(url, text) {
+  document.getElementById('deleteModalText').textContent = text || 'Вы уверены? Это действие нельзя отменить.';
+  document.getElementById('deleteModalForm').action = url;
+  document.getElementById('deleteModal').classList.add('open');
+}
+function closeDeleteModal() {
+  document.getElementById('deleteModal').classList.remove('open');
+}
+document.getElementById('deleteModal').addEventListener('click', function(e) {
+  if (e.target === this) closeDeleteModal();
+});
+
+// Выбор правильного ответа (визуальный)
+document.querySelectorAll('.option-card').forEach(function(card) {
+  card.addEventListener('click', function() {
+    document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+    this.classList.add('selected');
+    this.querySelector('input[type="radio"]').checked = true;
+  });
+});
+
+// Предпросмотр загружаемой картинки
+function previewImage(input, previewId) {
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const preview = document.getElementById(previewId);
+      if (preview) { preview.src = e.target.result; preview.style.display = 'block'; }
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+// Закрытие алертов
+document.querySelectorAll('.alert button').forEach(function(btn) {
+  btn.addEventListener('click', function() { this.parentElement.remove(); });
+});
+setTimeout(function() {
+  document.querySelectorAll('.alert').forEach(function(a) {
+    a.style.opacity = '0'; a.style.transition = 'opacity 0.5s';
+    setTimeout(function() { a.remove(); }, 500);
+  });
+}, 4000);
+</script>
+</body>
+</html>
