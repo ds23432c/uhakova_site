@@ -1,9 +1,4 @@
-<!--
-=======================================================
-ФАЙЛ: templates/admin/modules.html
-НОВЫЙ ФАЙЛ: senior_edu/templates/admin/modules.html
-=======================================================
--->
+
 {% extends 'admin/base_admin.html' %}
 {% block title %}Модули{% endblock %}
 {% block page_title %}<i class="fas fa-layer-group"></i> Модули{% endblock %}
@@ -30,8 +25,11 @@
             <a href="{{ url_for('admin.edit_module', module_id=m.id) }}" class="btn btn-primary btn-sm">
               <i class="fas fa-edit"></i> Изменить
             </a>
-            <button onclick="confirmDelete({{ url_for('admin.delete_module', module_id=m.id) | tojson }}, {{ ('Удалить модуль «' ~ m.title ~ '»? Убедитесь что в нём нет уроков.') | tojson }})"
-              class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+            <button type="button"
+                    onclick="confirmDelete(this.dataset.url, this.dataset.text)"
+                    data-url="/admin/modules/{{ m.id }}/delete"
+                    data-text="Удалить модуль «{{ m.title|e }}»? Убедитесь что в нём нет уроков."
+                    class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
           </div>
         </td>
       </tr>
