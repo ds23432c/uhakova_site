@@ -17,7 +17,9 @@
         <select name="lesson_id" class="form-control" required>
           <option value="">— Выберите урок —</option>
           {% for lesson in lessons %}
-          <option value="{{ lesson.id }}">{{ lesson.module.order_num }}.{{ lesson.order_num }} {{ lesson.title }}</option>
+          <option value="{{ lesson.id }}" {% if selected_lesson_id == lesson.id %}selected{% endif %}>
+            {{ lesson.module.order_num }}.{{ lesson.order_num }} {{ lesson.title }}
+          </option>
           {% endfor %}
         </select>
       </div>

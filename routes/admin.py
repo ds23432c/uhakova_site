@@ -258,9 +258,11 @@ def questions():
 @login_required
 @admin_required
 def add_question():
+    selected_lesson_id = request.args.get('lesson_id', type=int)
     lessons = Lesson.query.order_by(Lesson.title).all()
+
     if request.method == 'POST':
-        lesson_id = request.form.get('lesson_id')
+        lesson_id = request.form.get('lesson_id') or selected_lesson_id
         question_text = request.form.get('question_text', '').strip()
         option_a = request.form.get('option_a', '').strip()
         option_b = request.form.get('option_b', '').strip()
@@ -273,8 +275,10 @@ def add_question():
             q = Question(
                 lesson_id=int(lesson_id),
                 question_text=question_text,
-                option_a=option_a, option_b=option_b,
-                option_c=option_c, option_d=option_d,
+                option_a=option_a,
+                option_b=option_b,
+                option_c=option_c,
+                option_d=option_d,
                 correct_answer=correct_answer,
                 explanation=explanation
             )
@@ -283,7 +287,8 @@ def add_question():
             flash('✅ Вопрос добавлен!', 'success')
             return redirect(url_for('admin.questions'))
         flash('❌ Заполните обязательные поля', 'danger')
-    return render_template('admin/add_question.html', lessons=lessons)
+
+    return render_template('admin/add_question.html', lessons=lessons, selected_lesson_id=selected_lesson_id)
 
 
 @admin_bp.route('/questions/<int:q_id>/edit', methods=['GET', 'POST'])
