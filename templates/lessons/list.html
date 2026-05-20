@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}Уроки{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1><i class="fas fa-book-open"></i> Все уроки</h1>
+  <p>Выберите модуль и начните обучение</p>
+</div>
+
+{% for module in modules %}
+<div class="module-section" id="module-{{ module.id }}">
+  <div class="module-header">
+    <span class="module-icon-big">{{ module.icon }}</span>
+    <div>
+      <div class="module-num-label">Модуль {{ module.order_num }}</div>
+      <h2>{{ module.title }}</h2>
+      <p>{{ module.description }}</p>
+    </div>
+    {% if current_user.is_authenticated %}
+    <div class="module-progress-info">
+      {% set completed = namespace(count=0) %}
+      {% for lesson in module.lessons %}
+        {% if lesson.id in user_progress %}{% set completed.count = completed.count + 1 %}{% endif %}
+      {% endfor %}
+      <div class="module-prog-circle">
+        {{ completed.count }}/{{ module.lessons|length }}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="lessons-grid">
+    {% for lesson in module.lessons %}
+    <div class="lesson-card {% if lesson.id in user_progress %}lesson-done{% endif %}">
+      <div class="lesson-card-top">
+        {% if lesson.id in user_progress %}
+          <span class="lesson-status done">✅ Пройден</span>
+        {% else %}
+          <span class="lesson-status">📖 Урок {{ lesson.order_num }}</span>
+        {% endif %}
+        <span class="lesson-duration"><i class="fas fa-clock"></i> {{ lesson.duration_min }} мин</span>
+      </div>
+      <h3>{{ lesson.title }}</h3>
+      <div class="lesson-card-footer">
+        <a href="{{ url_for('lessons.lesson', lesson_id=lesson.id) }}" class="btn btn-primary">
+          {% if lesson.id in user_progress %}Повторить{% else %}Начать урок{% endif %}
+        </a>
+        {% if lesson.questions %}
+        <a href="{{ url_for('tests.quiz', lesson_id=lesson.id) }}" class="btn btn-outline btn-sm">
+          <i class="fas fa-question-circle"></i> Тест
+        </a>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endfor %}
+{% endblock %}

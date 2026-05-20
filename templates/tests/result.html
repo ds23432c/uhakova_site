@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}Результат теста{% endblock %}
+{% block content %}
+<div class="result-page">
+  <div class="result-card {% if passed %}result-pass{% else %}result-fail{% endif %}">
+    <div class="result-icon">{% if passed %}🏆{% else %}📚{% endif %}</div>
+    <h1>{% if passed %}Тест пройден!{% else %}Попробуйте ещё раз{% endif %}</h1>
+    <div class="result-score">{{ score }} / {{ total }}</div>
+    <div class="result-percent">{{ percentage }}%</div>
+    <p>{% if passed %}Отличная работа! Урок отмечен как пройденный.{% else %}Не расстраивайтесь! Повторите урок и попробуйте снова.{% endif %}</p>
+    <div class="result-btns">
+      <a href="{{ url_for('lessons.lesson', lesson_id=lesson.id) }}" class="btn btn-outline">
+        <i class="fas fa-book"></i> Вернуться к уроку
+      </a>
+      <a href="{{ url_for('tests.quiz', lesson_id=lesson.id) }}" class="btn btn-primary">
+        <i class="fas fa-redo"></i> Пройти ещё раз
+      </a>
+    </div>
+  </div>
+
+  <!-- Разбор ответов -->
+  <div class="answers-review">
+    <h2>Разбор ответов</h2>
+    {% for r in results %}
+    <div class="answer-card {% if r.is_correct %}answer-correct{% else %}answer-wrong{% endif %}">
+      <div class="answer-status">{% if r.is_correct %}✅ Правильно{% else %}❌ Неправильно{% endif %}</div>
+      <p class="answer-question"><strong>{{ r.question }}</strong></p>
+      <p>Ваш ответ: <strong>{{ r.options[r.user_answer] if r.user_answer else 'Не ответили' }}</strong></p>
+      {% if not r.is_correct %}
+      <p>Правильный ответ: <strong class="text-success">{{ r.options[r.correct_answer] }}</strong></p>
+      {% endif %}
+      {% if r.explanation %}
+      <p class="answer-explanation"><i class="fas fa-lightbulb"></i> {{ r.explanation }}</p>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

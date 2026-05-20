@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Словарь терминов{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1><i class="fas fa-spell-check"></i> Словарь терминов</h1>
+  <p>Простые объяснения компьютерных слов</p>
+</div>
+<div class="glossary-letters">
+  {% for letter in letters %}
+  <a href="#letter-{{ letter }}" class="letter-btn">{{ letter }}</a>
+  {% endfor %}
+</div>
+{% set current_letter = namespace(val='') %}
+{% for term in terms %}
+  {% if term.letter != current_letter.val %}
+    {% if current_letter.val %}</div>{% endif %}
+    {% set current_letter.val = term.letter %}
+    <div class="glossary-section" id="letter-{{ term.letter }}">
+    <h2 class="glossary-letter">{{ term.letter }}</h2>
+  {% endif %}
+  <div class="glossary-term">
+    <strong class="term-word">{{ term.term }}</strong>
+    <p>{{ term.definition }}</p>
+  </div>
+{% endfor %}
+</div>
+{% endblock %}

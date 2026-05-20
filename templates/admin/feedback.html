@@ -1,0 +1,17 @@
+{% extends 'admin/base_admin.html' %}
+{% block title %}Обратная связь{% endblock %}
+{% block admin_content %}
+<h1><i class="fas fa-envelope"></i> Обратная связь</h1>
+{% for item in items %}
+<div class="feedback-card">
+  <div class="feedback-meta">
+    <strong>{{ item.name or 'Аноним' }}</strong>
+    {% if item.email %}<span>{{ item.email }}</span>{% endif %}
+    <span>{{ item.created_at.strftime('%d.%m.%Y %H:%M') }}</span>
+  </div>
+  <p>{{ item.message }}</p>
+</div>
+{% else %}
+<p class="text-muted">Сообщений нет</p>
+{% endfor %}
+{% endblock %}

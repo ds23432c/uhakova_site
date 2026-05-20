@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}Форум{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1><i class="fas fa-comments"></i> Форум</h1>
+  <p>Задавайте вопросы и общайтесь с другими учениками</p>
+  {% if current_user.is_authenticated %}
+  <a href="{{ url_for('forum.new_topic') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Новая тема</a>
+  {% endif %}
+</div>
+<div class="forum-list">
+  {% for topic in topics %}
+  <div class="forum-topic {% if topic.is_pinned %}topic-pinned{% endif %}">
+    <div class="topic-icon">{% if topic.is_pinned %}📌{% else %}💬{% endif %}</div>
+    <div class="topic-info">
+      <a href="{{ url_for('forum.topic', topic_id=topic.id) }}" class="topic-title">{{ topic.title }}</a>
+      <div class="topic-meta">
+        <span>👤 {{ topic.author.name }}</span>
+        <span>📅 {{ topic.created_at.strftime('%d.%m.%Y') }}</span>
+        <span>👁️ {{ topic.views }} просмотров</span>
+        <span>💬 {{ topic.replies|length }} ответов</span>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <p class="text-muted text-center" style="padding:2rem">Тем пока нет. Создайте первую!</p>
+  {% endfor %}
+</div>
+{% endblock %}

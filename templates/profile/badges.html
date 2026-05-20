@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Мои бейджи{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1><i class="fas fa-medal"></i> Бейджи и достижения</h1>
+  <p>Зарабатывайте бейджи, проходя уроки и тесты</p>
+</div>
+<div class="badges-grid-full">
+  {% for badge in all_badges %}
+  <div class="badge-card {% if badge.id in earned_ids %}badge-earned{% else %}badge-locked{% endif %}">
+    <div class="badge-icon-big">{{ badge.icon }}</div>
+    <h3>{{ badge.name }}</h3>
+    <p>{{ badge.description }}</p>
+    {% if badge.id in earned_ids %}
+    <span class="badge-status earned">✅ Получен</span>
+    {% else %}
+    <span class="badge-status locked">🔒 Не получен</span>
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

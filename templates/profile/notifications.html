@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}Уведомления{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1><i class="fas fa-bell"></i> Уведомления</h1>
+</div>
+<div class="notifs-list">
+  {% for n in notifs %}
+  <div class="notif-item {% if not n.is_read %}notif-unread{% endif %}">
+    <p>{{ n.text }}</p>
+    <span class="notif-date">{{ n.created_at.strftime('%d.%m.%Y %H:%M') }}</span>
+  </div>
+  {% else %}
+  <p class="text-muted">Уведомлений нет</p>
+  {% endfor %}
+</div>
+{% endblock %}

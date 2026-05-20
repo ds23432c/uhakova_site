@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Тест: {{ lesson.title }}{% endblock %}
+{% block content %}
+<div class="quiz-page">
+  <div class="quiz-header">
+    <h1><i class="fas fa-question-circle"></i> Тест по уроку</h1>
+    <h2>{{ lesson.title }}</h2>
+    <p>Ответьте на {{ questions|length }} вопросов. Для прохождения нужно набрать 60% и выше.</p>
+  </div>
+  <form method="POST" class="quiz-form">
+    {% for q in questions %}
+    <div class="question-card" id="q{{ loop.index }}">
+      <div class="question-num">Вопрос {{ loop.index }} из {{ questions|length }}</div>
+      <p class="question-text">{{ q.question_text }}</p>
+      <div class="options-grid">
+        {% for letter, text in [('a', q.option_a), ('b', q.option_b), ('c', q.option_c), ('d', q.option_d)] %}
+        {% if text %}
+        <label class="option-label">
+          <input type="radio" name="q_{{ q.id }}" value="{{ letter }}" required>
+          <span class="option-letter">{{ letter.upper() }}</span>
+          <span class="option-text">{{ text }}</span>
+        </label>
+        {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+    <div class="quiz-submit">
+      <button type="submit" class="btn btn-primary btn-lg">
+        <i class="fas fa-check"></i> Проверить ответы
+      </button>
+    </div>
+  </form>
+</div>
+{% endblock %}

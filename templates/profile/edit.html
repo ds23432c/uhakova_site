@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}Редактировать профиль{% endblock %}
+{% block content %}
+<div class="auth-page">
+  <div class="auth-card" style="max-width:600px">
+    <h1><i class="fas fa-edit"></i> Редактировать профиль</h1>
+    <form method="POST" enctype="multipart/form-data">
+      <div class="form-group text-center">
+        <img src="{{ url_for('static', filename='uploads/' + current_user.avatar) }}"
+             onerror="this.src='{{ url_for('static', filename='img/default.png') }}'"
+             class="profile-avatar-big" style="margin:0 auto 12px;display:block">
+        <label class="btn btn-outline btn-sm" style="cursor:pointer">
+          <i class="fas fa-camera"></i> Изменить фото
+          <input type="file" name="avatar" accept="image/*" style="display:none">
+        </label>
+      </div>
+      <div class="form-group">
+        <label>Имя</label>
+        <input type="text" name="name" value="{{ current_user.name }}" class="form-control form-control-lg">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Возраст</label>
+          <input type="number" name="age" value="{{ current_user.age or '' }}" class="form-control form-control-lg" min="1" max="120">
+        </div>
+        <div class="form-group">
+          <label>Город</label>
+          <input type="text" name="city" value="{{ current_user.city or '' }}" class="form-control form-control-lg">
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary btn-lg btn-block">
+        <i class="fas fa-save"></i> Сохранить
+      </button>
+    </form>
+    <div class="auth-footer"><a href="{{ url_for('profile.profile') }}">← Назад к профилю</a></div>
+  </div>
+</div>
+{% endblock %}

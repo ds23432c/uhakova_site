@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>{{ lesson.title }}</title>
+<style>
+  body { font-family: Arial, sans-serif; font-size: 16px; max-width: 800px; margin: 0 auto; padding: 20px; }
+  h1 { color: #2c5f8a; border-bottom: 2px solid #2c5f8a; padding-bottom: 10px; }
+  h2 { color: #2c5f8a; }
+  h3 { color: #444; }
+  .tip-block { background: #fff3cd; border-left: 4px solid #ffc107; padding: 12px 16px; margin: 16px 0; border-radius: 4px; }
+  ul, ol { line-height: 2; }
+  @media print { button { display: none; } }
+</style>
+</head>
+<body>
+  <div style="text-align:right;margin-bottom:20px">
+    <button onclick="window.print()" style="padding:10px 20px;background:#2c5f8a;color:white;border:none;border-radius:6px;cursor:pointer;font-size:16px">
+      🖨️ Распечатать
+    </button>
+  </div>
+  <h1>{{ lesson.title }}</h1>
+  <p><em>Модуль {{ lesson.module.order_num }}: {{ lesson.module.title }} | Время: {{ lesson.duration_min }} минут</em></p>
+  <hr>
+  {{ lesson.content | safe }}
+  <hr>
+  <p style="text-align:center;color:#888;font-size:14px">УчимсяВместе — бесплатные уроки компьютерной грамотности</p>
+</body>
+</html>

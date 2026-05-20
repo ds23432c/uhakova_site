@@ -1,0 +1,20 @@
+{% extends 'admin/base_admin.html' %}
+{% block title %}Управление блогом{% endblock %}
+{% block admin_content %}
+<div class="admin-header-row">
+  <h1><i class="fas fa-newspaper"></i> Блог</h1>
+  <a href="{{ url_for('admin.add_post') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Новая статья</a>
+</div>
+<table class="admin-table">
+  <thead><tr><th>Заголовок</th><th>Дата</th><th>Статус</th></tr></thead>
+  <tbody>
+    {% for post in posts %}
+    <tr>
+      <td><a href="{{ url_for('blog.post', post_id=post.id) }}">{{ post.title }}</a></td>
+      <td>{{ post.created_at.strftime('%d.%m.%Y') }}</td>
+      <td>{% if post.is_published %}<span class="badge-pass">Опубликовано</span>{% else %}<span class="badge-fail">Скрыто</span>{% endif %}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

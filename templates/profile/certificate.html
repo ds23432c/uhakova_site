@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Сертификат{% endblock %}
+{% block content %}
+<div class="certificate-page">
+  <div class="certificate-preview">
+    <div class="cert-border">
+      <div class="cert-header">🎓 СЕРТИФИКАТ</div>
+      <div class="cert-subtitle">об успешном прохождении курса</div>
+      <div class="cert-course">"Компьютерная грамотность для пожилых людей"</div>
+      <div class="cert-body">Настоящим подтверждается, что</div>
+      <div class="cert-name">{{ current_user.name }}</div>
+      <div class="cert-body">успешно прошёл(а) все 5 модулей курса</div>
+      <div class="cert-date">{{ now.strftime('%d.%m.%Y') if now else '' }}</div>
+    </div>
+  </div>
+  <div class="text-center" style="margin-top:2rem">
+    <a href="{{ url_for('profile.download_certificate') }}" class="btn btn-primary btn-lg">
+      <i class="fas fa-download"></i> Скачать сертификат (PDF)
+    </a>
+    <a href="{{ url_for('profile.profile') }}" class="btn btn-outline btn-lg">
+      ← Назад к профилю
+    </a>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}{{ post.title }}{% endblock %}
+{% block content %}
+<div class="blog-post-page">
+  <div class="breadcrumb">
+    <a href="{{ url_for('blog.blog') }}">Новости</a> → <span>{{ post.title }}</span>
+  </div>
+  <article class="blog-article">
+    <div class="blog-post-date">{{ post.created_at.strftime('%d.%m.%Y') }}</div>
+    <h1>{{ post.title }}</h1>
+    <div class="blog-post-content">{{ post.content | safe }}</div>
+  </article>
+  <a href="{{ url_for('blog.blog') }}" class="btn btn-outline">← Все статьи</a>
+</div>
+{% endblock %}

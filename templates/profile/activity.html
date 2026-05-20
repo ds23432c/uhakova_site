@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}История активности{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1><i class="fas fa-history"></i> История активности</h1>
+</div>
+<div class="activity-list">
+  {% for log in logs %}
+  <div class="activity-item">
+    <span class="activity-date">{{ log.created_at.strftime('%d.%m.%Y %H:%M') }}</span>
+    <span class="activity-text">{{ log.action }}</span>
+  </div>
+  {% else %}
+  <p class="text-muted">Активности пока нет. Начните обучение!</p>
+  {% endfor %}
+</div>
+{% endblock %}

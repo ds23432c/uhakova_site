@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Обратная связь{% endblock %}
+{% block content %}
+<div class="auth-page">
+  <div class="auth-card" style="max-width:600px">
+    <div class="auth-icon">✉️</div>
+    <h1>Напишите нам</h1>
+    <p class="auth-desc">Если у вас есть вопросы или пожелания — мы обязательно ответим!</p>
+    <form method="POST">
+      <div class="form-group">
+        <label>Ваше имя</label>
+        <input type="text" name="name" class="form-control form-control-lg" placeholder="Нина Петровна" value="{{ current_user.name if current_user.is_authenticated else '' }}">
+      </div>
+      <div class="form-group">
+        <label>Email для ответа</label>
+        <input type="email" name="email" class="form-control form-control-lg" placeholder="example@mail.ru" value="{{ current_user.email if current_user.is_authenticated else '' }}">
+      </div>
+      <div class="form-group">
+        <label>Ваше сообщение *</label>
+        <textarea name="message" rows="6" class="form-control" placeholder="Опишите ваш вопрос или пожелание..." required></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary btn-lg btn-block">
+        <i class="fas fa-paper-plane"></i> Отправить
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock %}

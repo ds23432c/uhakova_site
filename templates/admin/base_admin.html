@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Админ-панель{% endblock %}
+{% block content %}
+<div class="admin-page">
+  <div class="admin-sidebar">
+    <h3>⚙️ Управление</h3>
+    <a href="{{ url_for('admin.dashboard') }}" class="{% if request.endpoint == 'admin.dashboard' %}active{% endif %}"><i class="fas fa-tachometer-alt"></i> Дашборд</a>
+    <a href="{{ url_for('admin.users') }}" class="{% if request.endpoint == 'admin.users' %}active{% endif %}"><i class="fas fa-users"></i> Пользователи</a>
+    <a href="{{ url_for('admin.lessons') }}" class="{% if request.endpoint == 'admin.lessons' %}active{% endif %}"><i class="fas fa-book"></i> Уроки</a>
+    <a href="{{ url_for('admin.blog') }}" class="{% if request.endpoint == 'admin.blog' %}active{% endif %}"><i class="fas fa-newspaper"></i> Блог</a>
+    <a href="{{ url_for('admin.feedback') }}" class="{% if request.endpoint == 'admin.feedback' %}active{% endif %}"><i class="fas fa-envelope"></i> Обратная связь</a>
+    <a href="{{ url_for('admin.send_email') }}" class="{% if request.endpoint == 'admin.send_email' %}active{% endif %}"><i class="fas fa-paper-plane"></i> Рассылка</a>
+  </div>
+  <div class="admin-content">
+    {% block admin_content %}{% endblock %}
+  </div>
+</div>
+{% endblock %}

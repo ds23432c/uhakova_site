@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% block title %}Мой профиль{% endblock %}
+{% block content %}
+<div class="profile-page">
+  <!-- Шапка профиля -->
+  <div class="profile-header">
+    <div class="profile-avatar-wrap">
+      <img src="{{ url_for('static', filename='uploads/' + current_user.avatar) }}"
+           onerror="this.src='{{ url_for('static', filename='img/default.png') }}'"
+           class="profile-avatar-big">
+    </div>
+    <div class="profile-info">
+      <h1>{{ current_user.name }}</h1>
+      <div class="profile-meta">
+        {% if current_user.city %}<span><i class="fas fa-map-marker-alt"></i> {{ current_user.city }}</span>{% endif %}
+        {% if current_user.age %}<span><i class="fas fa-birthday-cake"></i> {{ current_user.age }} лет</span>{% endif %}
+        <span><i class="fas fa-calendar"></i> На сайте с {{ current_user.created_at.strftime('%d.%m.%Y') }}</span>
+      </div>
+      <div class="profile-level">
+        <span class="level-badge level-{{ level_num }}">{{ level_name }}</span>
+        <span class="xp-count">⭐ {{ xp }} XP</span>
+      </div>
+    </div>
+    <a href="{{ url_for('profile.edit_profile') }}" class="btn btn-outline">
+      <i class="fas fa-edit"></i> Редактировать
+    </a>
+  </div>
+
+  <!-- Прогресс -->
+  <div class="profile-progress-section">
+    <h2>Мой прогресс</h2>
+    <div class="big-progress-bar">
+      <div class="big-progress-fill" style="width: {{ percent }}%"></div>
+    </div>
+    <p class="progress-text">Пройдено {{ completed_count }} из {{ total_lessons }} уроков ({{ percent }}%)</p>
+
+    {% if percent == 100 %}
+    <div class="certificate-banner">
+      🎓 Поздравляем! Вы прошли все уроки!
+      <a href="{{ url_for('profile.certificate') }}" class="btn btn-primary">Получить сертификат</a>
+    </div>
+    {% endif %}
+
+    {% for module in modules %}
+    <div class="module-progress">
+      <div class="module-prog-header">
+        <span>{{ module.icon }} {{ module.title }}</span>
+        {% set mc = namespace(c=0) %}
+        {% for l in module.lessons %}{% if l.id in completed_ids %}{% set mc.c = mc.c+1 %}{% endif %}{% endfor %}
+        <span>{{ mc.c }}/{{ module.lessons|length }}</span>
+      </div>
+      <div class="progress-bar-sm">
+        <div class="progress-fill-sm" style="width: {{ (mc.c / module.lessons|length * 100)|int if module.lessons else 0 }}%"></div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Бейджи -->
+  {% if badges %}
+  <div class="profile-badges-section">
+    <h2><i class="fas fa-medal"></i> Мои бейджи ({{ badges|length }})</h2>
+    <div class="badges-row">
+      {% for ub in badges %}
+      <div class="badge-item" title="{{ ub.badge.description }}">
+        <span class="badge-icon">{{ ub.badge.icon }}</span>
+        <span class="badge-name">{{ ub.badge.name }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    <a href="{{ url_for('profile.badges') }}" class="btn btn-outline btn-sm">Все бейджи</a>
+  </div>
+  {% endif %}
+
+  <!-- Закладки -->
+  {% if bookmarks %}
+  <div class="profile-bookmarks">
+    <h2><i class="fas fa-bookmark"></i> Закладки</h2>
+    <div class="bookmarks-list">
+      {% for bm in bookmarks %}
+      <a href="{{ url_for('lessons.lesson', lesson_id=bm.lesson_id) }}" class="bookmark-link">
+        📖 {{ bm.lesson.title }}
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Последние результаты тестов -->
+  {% if test_results %}
+  <div class="profile-tests">
+    <h2><i class="fas fa-chart-bar"></i> Последние тесты</h2>
+    <div class="tests-table-wrap">
+      <table class="tests-table">
+        <thead>
+          <tr><th>Урок</th><th>Результат</th><th>Статус</th><th>Дата</th></tr>
+        </thead>
+        <tbody>
+          {% for tr in test_results %}
+          <tr>
+            <td>{{ tr.lesson.title }}</td>
+            <td>{{ tr.score }}/{{ tr.total }}</td>
+            <td>{% if tr.passed %}<span class="badge-pass">✅ Сдан</span>{% else %}<span class="badge-fail">❌ Не сдан</span>{% endif %}</td>
+            <td>{{ tr.taken_at.strftime('%d.%m.%Y') }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

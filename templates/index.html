@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% block title %}Главная — Учимся вместе{% endblock %}
+{% block content %}
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">🎓 Бесплатное обучение</div>
+    <h1>Освойте компьютер<br>и интернет легко!</h1>
+    <p class="hero-desc">Простые уроки специально для пожилых людей. Никаких сложных терминов — только понятные объяснения с картинками.</p>
+    <div class="hero-buttons">
+      <a href="{{ url_for('lessons.lessons_list') }}" class="btn btn-primary btn-lg">
+        <i class="fas fa-play-circle"></i> Начать учиться
+      </a>
+      <a href="{{ url_for('auth.register') }}" class="btn btn-outline btn-lg">
+        <i class="fas fa-user-plus"></i> Зарегистрироваться
+      </a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">15</span><span class="stat-label">уроков</span></div>
+      <div class="stat"><span class="stat-num">5</span><span class="stat-label">модулей</span></div>
+      <div class="stat"><span class="stat-num">100%</span><span class="stat-label">бесплатно</span></div>
+    </div>
+  </div>
+  <div class="hero-image">
+    <img src="/static/img/hero.jpg" alt="Пожилой человек за компьютером" onerror="this.style.display='none'">
+    <div class="hero-img-placeholder">
+      <span class="hero-emoji">👴🖥️👵</span>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features">
+  <h2 class="section-title">Почему выбирают нас?</h2>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">📖</div>
+      <h3>Понятные уроки</h3>
+      <p>Всё объясняем простым языком, без сложных терминов. С картинками и примерами.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔊</div>
+      <h3>Озвучка текста</h3>
+      <p>Нажмите кнопку и компьютер прочитает урок вслух. Очень удобно!</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔤</div>
+      <h3>Крупный шрифт</h3>
+      <p>Увеличьте или уменьшите размер текста по кнопкам А+ и А− в любой момент.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🏆</div>
+      <h3>Сертификат</h3>
+      <p>После прохождения всех уроков вы получите именной сертификат.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">💬</div>
+      <h3>Поддержка</h3>
+      <p>Задавайте вопросы на форуме и получайте ответы от других учеников и администраторов.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📱</div>
+      <h3>На любом устройстве</h3>
+      <p>Сайт работает на телефоне, планшете и компьютере.</p>
+    </div>
+  </div>
+</section>
+
+<!-- MODULES -->
+<section class="modules-section">
+  <h2 class="section-title">Программа обучения</h2>
+  <p class="section-desc">5 модулей, 15 уроков — от основ до полезных сервисов</p>
+  <div class="modules-grid">
+    {% for module in modules %}
+    <div class="module-card">
+      <div class="module-icon">{{ module.icon }}</div>
+      <div class="module-info">
+        <div class="module-num">Модуль {{ module.order_num }}</div>
+        <h3>{{ module.title }}</h3>
+        <p>{{ module.description }}</p>
+        <div class="module-lessons-count">
+          <i class="fas fa-book"></i> {{ module.lessons|length }} уроков
+        </div>
+      </div>
+      <a href="{{ url_for('lessons.lessons_list') }}#module-{{ module.id }}" class="module-arrow">
+        <i class="fas fa-arrow-right"></i>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="text-center" style="margin-top:2rem">
+    <a href="{{ url_for('lessons.lessons_list') }}" class="btn btn-primary btn-lg">
+      Смотреть все уроки <i class="fas fa-arrow-right"></i>
+    </a>
+  </div>
+</section>
+
+<!-- BLOG -->
+{% if blog_posts %}
+<section class="blog-section">
+  <h2 class="section-title">Полезные статьи</h2>
+  <div class="blog-grid">
+    {% for post in blog_posts %}
+    <div class="blog-card">
+      <div class="blog-date">{{ post.created_at.strftime('%d.%m.%Y') }}</div>
+      <h3>{{ post.title }}</h3>
+      <a href="{{ url_for('blog.post', post_id=post.id) }}" class="btn btn-outline btn-sm">Читать</a>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<!-- CTA -->
+<section class="cta-section">
+  <h2>Начните учиться прямо сейчас!</h2>
+  <p>Регистрация бесплатная. Ваш прогресс сохраняется автоматически.</p>
+  <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg">
+    Зарегистрироваться бесплатно
+  </a>
+</section>
+
+{% endblock %}

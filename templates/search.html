@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Поиск: {{ query }}{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1><i class="fas fa-search"></i> Результаты поиска</h1>
+</div>
+<form action="{{ url_for('main.search') }}" method="GET" class="search-form-big">
+  <input type="text" name="q" value="{{ query }}" placeholder="Поиск по урокам и словарю..." class="form-control form-control-lg">
+  <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-search"></i> Найти</button>
+</form>
+
+{% if query %}
+  <h3>Уроки ({{ lessons|length }})</h3>
+  {% for lesson in lessons %}
+  <div class="search-result">
+    <a href="{{ url_for('lessons.lesson', lesson_id=lesson.id) }}" class="search-title">📖 {{ lesson.title }}</a>
+    <p>Модуль {{ lesson.module.order_num }}: {{ lesson.module.title }}</p>
+  </div>
+  {% else %}
+  <p class="text-muted">Уроков не найдено</p>
+  {% endfor %}
+
+  <h3 style="margin-top:2rem">Термины из словаря ({{ terms|length }})</h3>
+  {% for term in terms %}
+  <div class="search-result">
+    <strong class="search-title">{{ term.term }}</strong>
+    <p>{{ term.definition }}</p>
+  </div>
+  {% else %}
+  <p class="text-muted">Терминов не найдено</p>
+  {% endfor %}
+{% endif %}
+{% endblock %}

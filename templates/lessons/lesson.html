@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% block title %}{{ lesson.title }}{% endblock %}
+{% block content %}
+<div class="lesson-page">
+  <!-- Хлебные крошки -->
+  <div class="breadcrumb">
+    <a href="{{ url_for('main.index') }}">Главная</a> →
+    <a href="{{ url_for('lessons.lessons_list') }}">Уроки</a> →
+    <span>{{ lesson.title }}</span>
+  </div>
+
+  <div class="lesson-layout">
+    <!-- ОСНОВНОЙ КОНТЕНТ -->
+    <div class="lesson-main">
+      <div class="lesson-header-block">
+        <div class="lesson-meta">
+          <span><i class="fas fa-clock"></i> {{ lesson.duration_min }} минут</span>
+          <span><i class="fas fa-book"></i> Модуль {{ lesson.module.order_num }}</span>
+          {% if is_completed %}<span class="text-success"><i class="fas fa-check-circle"></i> Пройден</span>{% endif %}
+        </div>
+        <h1>{{ lesson.title }}</h1>
+      </div>
+
+      <!-- Панель инструментов -->
+      <div class="lesson-toolbar">
+        <button onclick="speakText()" class="btn btn-outline btn-sm" id="speakBtn" title="Прочитать вслух">
+          <i class="fas fa-volume-up"></i> Прочитать вслух
+        </button>
+        <button onclick="stopSpeech()" class="btn btn-outline btn-sm" id="stopBtn" style="display:none">
+          <i class="fas fa-stop"></i> Остановить
+        </button>
+        <a href="{{ url_for('lessons.print_lesson', lesson_id=lesson.id) }}" target="_blank" class="btn btn-outline btn-sm">
+          <i class="fas fa-print"></i> Распечатать
+        </a>
+        {% if current_user.is_authenticated %}
+        <form action="{{ url_for('lessons.toggle_bookmark', lesson_id=lesson.id) }}" method="POST" style="display:inline">
+          <button type="submit" class="btn btn-outline btn-sm {% if is_bookmarked %}btn-warning{% endif %}">
+            <i class="fas fa-bookmark"></i> {% if is_bookmarked %}В закладках{% else %}Добавить в закладки{% endif %}
+          </button>
+        </form>
+        {% endif %}
+      </div>
+
+      <!-- Содержимое урока -->
+      <div class="lesson-content" id="lessonContent">
+        {{ lesson.content | safe }}
+      </div>
+
+      <!-- Кнопки навигации и завершения -->
+      <div class="lesson-nav-btns">
+        {% if prev_lesson %}
+        <a href="{{ url_for('lessons.lesson', lesson_id=prev_lesson.id) }}" class="btn btn-outline">
+          <i class="fas fa-arrow-left"></i> Предыдущий урок
+        </a>
+        {% endif %}
+
+        {% if current_user.is_authenticated and not is_completed %}
+        <form action="{{ url_for('lessons.complete_lesson', lesson_id=lesson.id) }}" method="POST">
+          <button type="submit" class="btn btn-success btn-lg">
+            <i class="fas fa-check"></i> Отметить как пройденный
+          </button>
+        </form>
+        {% endif %}
+
+        {% if lesson.questions %}
+        <a href="{{ url_for('tests.quiz', lesson_id=lesson.id) }}" class="btn btn-primary btn-lg">
+          <i class="fas fa-question-circle"></i> Пройти тест
+        </a>
+        {% endif %}
+
+        {% if next_lesson %}
+        <a href="{{ url_for('lessons.lesson', lesson_id=next_lesson.id) }}" class="btn btn-primary">
+          Следующий урок <i class="fas fa-arrow-right"></i>
+        </a>
+        {% endif %}
+      </div>
+
+      <!-- Комментарии -->
+      <div class="comments-section">
+        <h3><i class="fas fa-comments"></i> Комментарии ({{ comments|length }})</h3>
+        {% if current_user.is_authenticated %}
+        <form action="{{ url_for('lessons.add_comment', lesson_id=lesson.id) }}" method="POST" class="comment-form">
+          <textarea name="comment_text" placeholder="Ваш вопрос или комментарий..." rows="3" class="form-control"></textarea>
+          <button type="submit" class="btn btn-primary" style="margin-top:8px">Отправить</button>
+        </form>
+        {% else %}
+        <p><a href="{{ url_for('auth.login') }}">Войдите</a> чтобы оставить комментарий</p>
+        {% endif %}
+        {% for comment in comments %}
+        <div class="comment">
+          <div class="comment-header">
+            <img src="{{ url_for('static', filename='uploads/' + comment.user.avatar) }}" onerror="this.src='{{ url_for('static', filename='img/default.png') }}'" class="comment-avatar">
+            <strong>{{ comment.user.name }}</strong>
+            <span class="comment-date">{{ comment.created_at.strftime('%d.%m.%Y %H:%M') }}</span>
+          </div>
+          <p>{{ comment.text }}</p>
+        </div>
+        {% else %}
+        <p class="text-muted">Пока нет комментариев. Будьте первым!</p>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- БОКОВАЯ ПАНЕЛЬ -->
+    <div class="lesson-sidebar">
+      {% if current_user.is_authenticated %}
+      <!-- Заметки -->
+      <div class="sidebar-card">
+        <h4><i class="fas fa-sticky-note"></i> Мои заметки</h4>
+        <form action="{{ url_for('lessons.save_note', lesson_id=lesson.id) }}" method="POST">
+          <textarea name="note_text" placeholder="Запишите важное..." rows="5" class="form-control">{{ user_note or '' }}</textarea>
+          <button type="submit" class="btn btn-primary btn-sm" style="margin-top:8px; width:100%">
+            <i class="fas fa-save"></i> Сохранить заметку
+          </button>
+        </form>
+      </div>
+      {% endif %}
+
+      <!-- Содержание модуля -->
+      <div class="sidebar-card">
+        <h4><i class="fas fa-list"></i> Уроки модуля</h4>
+        {% for l in lesson.module.lessons %}
+        <a href="{{ url_for('lessons.lesson', lesson_id=l.id) }}" class="sidebar-lesson-link {% if l.id == lesson.id %}active{% endif %}">
+          {% if l.id in [] %}✅{% else %}📖{% endif %}
+          {{ l.title }}
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function speakText() {
+  const text = document.getElementById('lessonContent').innerText;
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'ru-RU';
+  utterance.rate = 0.9;
+  window.speechSynthesis.speak(utterance);
+  document.getElementById('speakBtn').style.display = 'none';
+  document.getElementById('stopBtn').style.display = 'inline-flex';
+  utterance.onend = () => {
+    document.getElementById('speakBtn').style.display = 'inline-flex';
+    document.getElementById('stopBtn').style.display = 'none';
+  };
+}
+function stopSpeech() {
+  window.speechSynthesis.cancel();
+  document.getElementById('speakBtn').style.display = 'inline-flex';
+  document.getElementById('stopBtn').style.display = 'none';
+}
+</script>
+{% endblock %}
