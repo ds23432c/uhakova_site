@@ -40,52 +40,84 @@ body.dark {
 /* Размеры шрифта */
 body.font-size-small  { --font-size: 15px; }
 body.font-size-normal { --font-size: 18px; }
-body.font-size-large  { --font-size: 22px; }
+body.font-size-large  { --font-size: 22px; --navbar-h: 72px; }
 body.font-size-large .nav-logo {
-  font-size: 0.8rem;
-  gap: 4px;
+  font-size: 0.7rem;
+  gap: 3px;
+  flex: 0 0 auto !important;
+  line-height: 1;
 }
 body.font-size-large .nav-logo .logo-icon {
-  font-size: 0.95em;
+  font-size: 0.9em;
 }
 body.font-size-large .nav-links {
+  display: flex !important;
+  flex-direction: row !important;
   gap: 1px;
+  flex: 1 1 0 !important;
+  min-width: 0 !important;
+  overflow: hidden;
+  white-space: nowrap;
+  line-height: 1;
 }
 body.font-size-large .nav-links a {
-  padding: 3px 5px;
-  font-size: 0.6rem;
+  padding: 2px 4px;
+  font-size: 0.54rem;
+  line-height: 1;
+  height: auto;
 }
 body.font-size-large .nav-search input {
-  width: 70px;
-  font-size: 0.7rem;
-  padding: 4px 6px;
+  width: 56px;
+  font-size: 0.65rem;
+  padding: 3px 5px;
+  line-height: 1;
 }
 body.font-size-large .nav-search button {
-  padding: 4px 6px;
-  font-size: 0.7rem;
+  padding: 3px 5px;
+  font-size: 0.65rem;
+  line-height: 1;
 }
 body.font-size-large .btn-font,
 body.font-size-large .btn-theme,
 body.font-size-large .nav-user-btn,
 body.font-size-large .notif-btn {
-  padding: 2px 4px;
-  font-size: 0.62rem;
+  padding: 1px 3px;
+  font-size: 0.56rem;
+  line-height: 1;
 }
 body.font-size-large .font-controls {
   gap: 1px;
+  line-height: 1;
 }
 body.font-size-large .nav-avatar {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
 }
 body.font-size-large .nav-user-btn {
-  gap: 4px;
+  gap: 3px;
+  line-height: 1;
 }
 body.font-size-large .nav-inner {
-  gap: 6px;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 4px;
+  flex-wrap: nowrap !important;
+  white-space: nowrap;
+  height: 72px !important;
+  overflow: hidden !important;
+  line-height: 1;
 }
 body.font-size-large .nav-right {
-  gap: 4px;
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 3px;
+  margin-left: auto;
+  flex: 0 0 auto !important;
+  min-width: 0;
+  white-space: nowrap;
+  line-height: 1;
 }
 
 /* ── Базовые стили ───────────────────────────── */
@@ -123,68 +155,101 @@ li { margin-bottom: 0.4em; }
   border-bottom: 1px solid var(--border);
   box-shadow: var(--shadow);
   min-height: var(--navbar-h);
-  height: auto;
+  height: var(--navbar-h);
+  overflow: hidden;
 }
 .nav-inner {
   display: flex; align-items: center; gap: 16px;
   min-height: var(--navbar-h);
-  height: auto;
+  height: var(--navbar-h);
   flex-wrap: nowrap;
   padding: 8px 0;
-  overflow-x: auto;
+  overflow: hidden;
   scrollbar-width: none;
+  line-height: 1;
 }
 .nav-logo {
   display: flex; align-items: center; gap: 8px;
   font-size: 1.3rem; font-weight: 700;
   color: var(--primary); text-decoration: none;
   flex-shrink: 0;
+  line-height: 1;
 }
 .logo-icon { font-size: 1.4em; }
 .nav-links {
   display: flex; gap: 4px; flex: 1 1 auto;
   min-width: 0; flex-wrap: nowrap;
-  overflow-x: auto;
+  overflow: hidden;
   scrollbar-width: none;
+  line-height: 1;
 }
 .nav-links a {
   padding: 8px 14px; border-radius: var(--radius-sm);
   color: var(--text); font-weight: 500; font-size: 0.95rem;
   text-decoration: none; transition: background 0.2s;
   white-space: nowrap;
+  line-height: 1;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
 }
 .nav-links a:hover { background: var(--secondary); color: var(--primary); }
 .nav-right {
   display: flex; align-items: center; gap: 8px; flex: 0 0 auto;
   min-width: 0; flex-wrap: nowrap; justify-content: flex-end;
+  line-height: 1;
+  height: 100%;
 }
 .nav-search {
   display: flex; gap: 4px;
+  align-items: center;
+  height: 100%;
+  line-height: 1;
 }
 .nav-search input {
   padding: 8px 12px; border: 1px solid var(--border);
   border-radius: var(--radius-sm); font-size: 0.9rem;
   background: var(--bg); color: var(--text); width: clamp(110px, 12vw, 160px);
+  line-height: 1;
+  height: auto;
+  flex-shrink: 0;
 }
 .nav-search button {
   padding: 8px 12px; background: var(--primary);
   color: white; border: none; border-radius: var(--radius-sm); cursor: pointer;
+  line-height: 1;
+  height: auto;
+  flex-shrink: 0;
 }
-.font-controls { display: flex; gap: 2px; }
+.font-controls { display: flex; gap: 2px; align-items: center; line-height: 1; height: 100%; }
 .btn-font {
   padding: 6px 10px; border: 1px solid var(--border);
   border-radius: var(--radius-sm); background: var(--bg-card);
   cursor: pointer; font-weight: 700; color: var(--text);
   transition: all 0.2s; font-size: 0.85rem;
+  line-height: 1;
+  height: auto;
+  flex-shrink: 0;
 }
 .btn-font:hover { background: var(--secondary); border-color: var(--primary); }
 .btn-theme {
   padding: 8px 10px; border: 1px solid var(--border);
   border-radius: var(--radius-sm); background: var(--bg-card);
   cursor: pointer; font-size: 1.1rem;
+  line-height: 1;
+  height: auto;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
 }
 .notif-btn {
   position: relative; padding: 8px; color: var(--text); font-size: 1.1rem;
+  line-height: 1;
+  height: auto;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
 }
 .notif-badge {
   position: absolute; top: 2px; right: 2px;
@@ -196,14 +261,21 @@ li { margin-bottom: 0.4em; }
   position: relative;
   padding-bottom: 10px;
   margin-bottom: -10px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  line-height: 1;
 }
 .nav-user-btn {
   display: flex; align-items: center; gap: 8px;
   padding: 6px 12px; border: 1px solid var(--border);
   border-radius: var(--radius-sm); background: var(--bg-card);
   cursor: pointer; font-size: 0.95rem; color: var(--text);
+  line-height: 1;
+  height: auto;
+  flex-shrink: 0;
 }
-.nav-avatar { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; }
+.nav-avatar { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
 .dropdown-menu {
   display: none; position: absolute; right: 0; top: calc(100% - 2px);
   background: var(--bg-card); border: 1px solid var(--border);
