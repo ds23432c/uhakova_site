@@ -41,34 +41,51 @@ body.dark {
 body.font-size-small  { --font-size: 15px; }
 body.font-size-normal { --font-size: 18px; }
 body.font-size-large  { --font-size: 22px; }
-body.font-size-large .nav-inner {
-  flex-wrap: wrap;
-  align-items: flex-start;
-  overflow-x: visible;
+body.font-size-large .nav-logo {
+  font-size: 0.8rem;
+  gap: 4px;
 }
-body.font-size-large .nav-logo { font-size: 1.15rem; }
+body.font-size-large .nav-logo .logo-icon {
+  font-size: 0.95em;
+}
 body.font-size-large .nav-links {
-  flex: 1 0 100%;
-  order: 3;
-  flex-wrap: wrap;
-  overflow-x: visible;
-  margin-top: 4px;
+  gap: 1px;
 }
-body.font-size-large .nav-right {
-  flex: 1 1 auto;
-  order: 2;
-  justify-content: flex-end;
-  flex-wrap: wrap;
-}
-body.font-size-large .nav-links a,
-body.font-size-large .nav-user-btn,
-body.font-size-large .btn-theme,
-body.font-size-large .btn-font,
-body.font-size-large .notif-btn {
-  font-size: 0.82rem;
+body.font-size-large .nav-links a {
+  padding: 3px 5px;
+  font-size: 0.6rem;
 }
 body.font-size-large .nav-search input {
-  width: clamp(110px, 14vw, 150px);
+  width: 70px;
+  font-size: 0.7rem;
+  padding: 4px 6px;
+}
+body.font-size-large .nav-search button {
+  padding: 4px 6px;
+  font-size: 0.7rem;
+}
+body.font-size-large .btn-font,
+body.font-size-large .btn-theme,
+body.font-size-large .nav-user-btn,
+body.font-size-large .notif-btn {
+  padding: 2px 4px;
+  font-size: 0.62rem;
+}
+body.font-size-large .font-controls {
+  gap: 1px;
+}
+body.font-size-large .nav-avatar {
+  width: 20px;
+  height: 20px;
+}
+body.font-size-large .nav-user-btn {
+  gap: 4px;
+}
+body.font-size-large .nav-inner {
+  gap: 6px;
+}
+body.font-size-large .nav-right {
+  gap: 4px;
 }
 
 /* ── Базовые стили ───────────────────────────── */
