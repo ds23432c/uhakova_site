@@ -46,9 +46,10 @@ body.font-size-large .nav-logo {
   gap: 4px;
   flex: 0 0 auto !important;
   line-height: 1;
-  height: 100%;
+  height: auto;
   display: flex;
   align-items: center;
+  order: 1;
 }
 body.font-size-large .nav-logo .logo-icon {
   font-size: 1em;
@@ -57,13 +58,14 @@ body.font-size-large .nav-links {
   display: flex !important;
   flex-direction: row !important;
   gap: 1px;
-  flex: 1 1 0 !important;
+  flex: 1 1 auto !important;
   min-width: 0 !important;
   overflow: hidden;
   white-space: nowrap;
   line-height: 1;
-  height: 100%;
+  height: auto;
   align-items: center;
+  order: 2;
 }
 body.font-size-large .nav-links a {
   padding: 4px 6px;
@@ -78,9 +80,10 @@ body.font-size-large .nav-search {
   display: flex !important;
   gap: 3px;
   align-items: center;
-  height: 100%;
+  height: auto;
   line-height: 1;
   flex-shrink: 0;
+  order: 4;
 }
 body.font-size-large .nav-search input {
   width: 65px;
@@ -109,12 +112,19 @@ body.font-size-large .notif-btn {
   display: flex;
   align-items: center;
 }
+body.font-size-large .btn-theme {
+  order: 6;
+}
+body.font-size-large .notif-btn {
+  order: 7;
+}
 body.font-size-large .font-controls {
   gap: 3px;
   line-height: 1;
-  height: 100%;
+  height: auto;
   display: flex;
   align-items: center;
+  order: 5;
 }
 body.font-size-large .nav-avatar {
   width: 24px;
@@ -127,29 +137,36 @@ body.font-size-large .nav-user-btn {
   height: auto;
   display: flex;
   align-items: center;
+  order: 8;
+}
+body.font-size-large .nav-user-menu {
+  order: 8;
 }
 body.font-size-large .nav-inner {
   display: flex !important;
   flex-direction: row !important;
   align-items: center !important;
   gap: 4px;
-  flex-wrap: nowrap !important;
-  white-space: nowrap;
-  height: 72px !important;
-  overflow: hidden !important;
+  flex-wrap: wrap !important;
+  white-space: normal;
+  height: auto !important;
+  overflow: visible !important;
   line-height: 1;
 }
 body.font-size-large .nav-right {
   display: flex !important;
   flex-direction: row !important;
   gap: 4px;
-  margin-left: auto;
+  margin-left: 0;
   flex: 0 0 auto !important;
   min-width: 0;
   white-space: nowrap;
   line-height: 1;
-  height: 100%;
+  height: auto;
   align-items: center;
+  order: 3;
+  flex-basis: 100%;
+  margin-top: 4px;
 }
 
 /* ── Базовые стили ───────────────────────────── */
@@ -186,19 +203,15 @@ li { margin-bottom: 0.4em; }
   background: var(--bg-card);
   border-bottom: 1px solid var(--border);
   box-shadow: var(--shadow);
-  min-height: var(--navbar-h);
-  height: var(--navbar-h);
-  overflow: hidden;
+  overflow: visible;
 }
 .nav-inner {
   display: flex; align-items: center; gap: 16px;
-  min-height: var(--navbar-h);
-  height: var(--navbar-h);
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   padding: 8px 0;
-  overflow: hidden;
+  overflow: visible;
   scrollbar-width: none;
-  line-height: 1;
+  min-height: auto;
 }
 .nav-logo {
   display: flex; align-items: center; gap: 8px;
@@ -206,6 +219,7 @@ li { margin-bottom: 0.4em; }
   color: var(--primary); text-decoration: none;
   flex-shrink: 0;
   line-height: 1;
+  order: 1;
 }
 .logo-icon { font-size: 1.4em; }
 .nav-links {
@@ -214,6 +228,7 @@ li { margin-bottom: 0.4em; }
   overflow: hidden;
   scrollbar-width: none;
   line-height: 1;
+  order: 2;
 }
 .nav-links a {
   padding: 8px 14px; border-radius: var(--radius-sm);
@@ -229,9 +244,12 @@ li { margin-bottom: 0.4em; }
 .nav-links a:hover { background: var(--secondary); color: var(--primary); }
 .nav-right {
   display: flex; align-items: center; gap: 8px; flex: 0 0 auto;
-  min-width: 0; flex-wrap: nowrap; justify-content: flex-end;
+  min-width: 0; flex-wrap: nowrap; justify-content: flex-start;
   line-height: 1;
-  height: 100%;
+  height: auto;
+  order: 3;
+  flex-basis: 100%;
+  margin-top: 4px;
 }
 .nav-search {
   display: flex; gap: 4px;
