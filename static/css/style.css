@@ -42,22 +42,33 @@ body.font-size-small  { --font-size: 15px; }
 body.font-size-normal { --font-size: 18px; }
 body.font-size-large  { --font-size: 22px; }
 body.font-size-large .nav-inner {
-  gap: 10px;
-  padding: 10px 0;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  overflow-x: visible;
 }
+body.font-size-large .nav-logo { font-size: 1.15rem; }
 body.font-size-large .nav-links {
-  flex: 1 1 100%;
+  flex: 1 0 100%;
+  order: 3;
+  flex-wrap: wrap;
+  overflow-x: visible;
+  margin-top: 4px;
 }
 body.font-size-large .nav-right {
-  flex: 1 1 100%;
+  flex: 1 1 auto;
+  order: 2;
+  justify-content: flex-end;
+  flex-wrap: wrap;
 }
-body.font-size-large .nav-search input {
-  width: clamp(120px, 16vw, 180px);
-}
+body.font-size-large .nav-links a,
 body.font-size-large .nav-user-btn,
 body.font-size-large .btn-theme,
-body.font-size-large .btn-font {
-  font-size: 0.95em;
+body.font-size-large .btn-font,
+body.font-size-large .notif-btn {
+  font-size: 0.82rem;
+}
+body.font-size-large .nav-search input {
+  width: clamp(110px, 14vw, 150px);
 }
 
 /* ── Базовые стили ───────────────────────────── */
@@ -101,37 +112,41 @@ li { margin-bottom: 0.4em; }
   display: flex; align-items: center; gap: 16px;
   min-height: var(--navbar-h);
   height: auto;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   padding: 8px 0;
+  overflow-x: auto;
+  scrollbar-width: none;
 }
 .nav-logo {
   display: flex; align-items: center; gap: 8px;
-  font-size: 1.3em; font-weight: 700;
+  font-size: 1.3rem; font-weight: 700;
   color: var(--primary); text-decoration: none;
   flex-shrink: 0;
 }
 .logo-icon { font-size: 1.4em; }
 .nav-links {
-  display: flex; gap: 4px; flex: 1 1 520px;
-  min-width: 0; flex-wrap: wrap;
+  display: flex; gap: 4px; flex: 1 1 auto;
+  min-width: 0; flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
 }
 .nav-links a {
   padding: 8px 14px; border-radius: var(--radius-sm);
-  color: var(--text); font-weight: 500; font-size: 0.9em;
+  color: var(--text); font-weight: 500; font-size: 0.95rem;
   text-decoration: none; transition: background 0.2s;
   white-space: nowrap;
 }
 .nav-links a:hover { background: var(--secondary); color: var(--primary); }
 .nav-right {
-  display: flex; align-items: center; gap: 8px; flex: 0 1 auto;
-  min-width: 0; flex-wrap: wrap; justify-content: flex-end;
+  display: flex; align-items: center; gap: 8px; flex: 0 0 auto;
+  min-width: 0; flex-wrap: nowrap; justify-content: flex-end;
 }
 .nav-search {
   display: flex; gap: 4px;
 }
 .nav-search input {
   padding: 8px 12px; border: 1px solid var(--border);
-  border-radius: var(--radius-sm); font-size: 0.9em;
+  border-radius: var(--radius-sm); font-size: 0.9rem;
   background: var(--bg); color: var(--text); width: clamp(110px, 12vw, 160px);
 }
 .nav-search button {
@@ -143,16 +158,16 @@ li { margin-bottom: 0.4em; }
   padding: 6px 10px; border: 1px solid var(--border);
   border-radius: var(--radius-sm); background: var(--bg-card);
   cursor: pointer; font-weight: 700; color: var(--text);
-  transition: all 0.2s; font-size: 0.85em;
+  transition: all 0.2s; font-size: 0.85rem;
 }
 .btn-font:hover { background: var(--secondary); border-color: var(--primary); }
 .btn-theme {
   padding: 8px 10px; border: 1px solid var(--border);
   border-radius: var(--radius-sm); background: var(--bg-card);
-  cursor: pointer; font-size: 1.1em;
+  cursor: pointer; font-size: 1.1rem;
 }
 .notif-btn {
-  position: relative; padding: 8px; color: var(--text); font-size: 1.1em;
+  position: relative; padding: 8px; color: var(--text); font-size: 1.1rem;
 }
 .notif-badge {
   position: absolute; top: 2px; right: 2px;
@@ -169,7 +184,7 @@ li { margin-bottom: 0.4em; }
   display: flex; align-items: center; gap: 8px;
   padding: 6px 12px; border: 1px solid var(--border);
   border-radius: var(--radius-sm); background: var(--bg-card);
-  cursor: pointer; font-size: 0.95em; color: var(--text);
+  cursor: pointer; font-size: 0.95rem; color: var(--text);
 }
 .nav-avatar { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; }
 .dropdown-menu {
@@ -179,6 +194,8 @@ li { margin-bottom: 0.4em; }
   min-width: 200px; z-index: 1000;
   flex-direction: column; padding: 8px 0;
 }
+.nav-inner::-webkit-scrollbar,
+.nav-links::-webkit-scrollbar { display: none; }
 .nav-user-menu:hover .dropdown-menu,
 .nav-user-menu:focus-within .dropdown-menu { display: flex; }
 .dropdown-menu a {
