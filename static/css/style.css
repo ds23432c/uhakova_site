@@ -197,7 +197,7 @@ li { margin-bottom: 0.4em; }
   display: flex; align-items: center; gap: 12px;
   flex-wrap: nowrap;
   padding: 8px 16px;
-  overflow: hidden;
+  overflow: visible;
   scrollbar-width: none;
   min-height: 56px;
   line-height: 1;
@@ -303,6 +303,7 @@ li { margin-bottom: 0.4em; }
   display: flex;
   align-items: center;
   line-height: 1;
+  z-index: 1001;
 }
 .nav-user-btn {
   display: flex; align-items: center; gap: 6px;
@@ -318,7 +319,7 @@ li { margin-bottom: 0.4em; }
   display: none; position: absolute; right: 0; top: calc(100% - 2px);
   background: var(--bg-card); border: 1px solid var(--border);
   border-radius: var(--radius); box-shadow: var(--shadow-lg);
-  min-width: 200px; z-index: 1000;
+  min-width: 200px; z-index: 2000;
   flex-direction: column; padding: 8px 0;
 }
 .nav-inner::-webkit-scrollbar,
