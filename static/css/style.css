@@ -41,6 +41,24 @@ body.dark {
 body.font-size-small  { --font-size: 15px; }
 body.font-size-normal { --font-size: 18px; }
 body.font-size-large  { --font-size: 22px; }
+body.font-size-large .nav-inner {
+  gap: 10px;
+  padding: 10px 0;
+}
+body.font-size-large .nav-links {
+  flex: 1 1 100%;
+}
+body.font-size-large .nav-right {
+  flex: 1 1 100%;
+}
+body.font-size-large .nav-search input {
+  width: clamp(120px, 16vw, 180px);
+}
+body.font-size-large .nav-user-btn,
+body.font-size-large .btn-theme,
+body.font-size-large .btn-font {
+  font-size: 0.95em;
+}
 
 /* ── Базовые стили ───────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -76,11 +94,15 @@ li { margin-bottom: 0.4em; }
   background: var(--bg-card);
   border-bottom: 1px solid var(--border);
   box-shadow: var(--shadow);
-  height: var(--navbar-h);
+  min-height: var(--navbar-h);
+  height: auto;
 }
 .nav-inner {
   display: flex; align-items: center; gap: 16px;
-  height: 100%;
+  min-height: var(--navbar-h);
+  height: auto;
+  flex-wrap: wrap;
+  padding: 8px 0;
 }
 .nav-logo {
   display: flex; align-items: center; gap: 8px;
@@ -90,7 +112,8 @@ li { margin-bottom: 0.4em; }
 }
 .logo-icon { font-size: 1.4em; }
 .nav-links {
-  display: flex; gap: 4px; flex: 1;
+  display: flex; gap: 4px; flex: 1 1 520px;
+  min-width: 0; flex-wrap: wrap;
 }
 .nav-links a {
   padding: 8px 14px; border-radius: var(--radius-sm);
@@ -100,7 +123,8 @@ li { margin-bottom: 0.4em; }
 }
 .nav-links a:hover { background: var(--secondary); color: var(--primary); }
 .nav-right {
-  display: flex; align-items: center; gap: 8px; flex-shrink: 0;
+  display: flex; align-items: center; gap: 8px; flex: 0 1 auto;
+  min-width: 0; flex-wrap: wrap; justify-content: flex-end;
 }
 .nav-search {
   display: flex; gap: 4px;
@@ -108,7 +132,7 @@ li { margin-bottom: 0.4em; }
 .nav-search input {
   padding: 8px 12px; border: 1px solid var(--border);
   border-radius: var(--radius-sm); font-size: 0.9em;
-  background: var(--bg); color: var(--text); width: 160px;
+  background: var(--bg); color: var(--text); width: clamp(110px, 12vw, 160px);
 }
 .nav-search button {
   padding: 8px 12px; background: var(--primary);
